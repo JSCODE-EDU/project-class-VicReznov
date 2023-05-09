@@ -8,6 +8,7 @@ import toyboard.yoon.dto.ArticleDto;
 import toyboard.yoon.service.ArticleService;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/articles")
@@ -25,6 +26,13 @@ public class ArticleController {
     @GetMapping
     public ResponseEntity<List<ArticleDto>> getArticles() {
         List<ArticleDto> result = articleService.getArticles();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/{articleId}")
+    public ResponseEntity<ArticleDto> getArticle(@PathVariable long articleId) {
+        ArticleDto result = articleService.getArticle(articleId);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
