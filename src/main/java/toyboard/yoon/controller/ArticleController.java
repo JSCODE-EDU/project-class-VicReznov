@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.ArticleDto;
 import toyboard.yoon.service.ArticleService;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
@@ -18,5 +20,12 @@ public class ArticleController {
     public ResponseEntity<ArticleDto> createArticle(@RequestBody final ArticleDto articleDto) {
         ArticleDto savedArticleDto = articleService.createArticle(articleDto);
         return new ResponseEntity<>(savedArticleDto, HttpStatus.OK);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ArticleDto>> getArticles() {
+        List<ArticleDto> result = articleService.getArticles();
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }
