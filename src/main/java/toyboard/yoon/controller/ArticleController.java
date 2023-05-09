@@ -37,6 +37,13 @@ public class ArticleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @PutMapping(value = "/{articleId}")
+    public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleDto articleDto) {
+        ArticleDto result = articleService.updateArticle(articleId, articleDto);
+
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
     @DeleteMapping(value = "/{articleId}")
     public ResponseEntity<Void> deleteArticle(@PathVariable long articleId) {
         articleService.deleteArticle(articleId);
