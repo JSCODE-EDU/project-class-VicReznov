@@ -51,4 +51,8 @@ public class ArticleService {
 
         return articleDto;
     }
+
+    public void deleteArticle(Long articleId) {
+        articleRepository.deleteById(articleId);
+    }
 }
