@@ -52,6 +52,23 @@ public class ArticleService {
         return articleDto;
     }
 
+    public ArticleDto updateArticle(Long articleId, ArticleDto articleDto) {
+        Optional<Article> article = articleRepository.findById(articleId);
+
+        if(article.isEmpty()) {
+            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+        }
+
+        Article updateArticle = article.get();
+        updateArticle.setTitle(articleDto.getTitle());
+        updateArticle.setContents(articleDto.getContents());
+        updateArticle.setAuthor(articleDto.getAuthor());
+
+        articleRepository.save(updateArticle);
+
+        return ArticleMapper.articleToDto(updateArticle);
+    }
+
     public void deleteArticle(Long articleId) {
         articleRepository.deleteById(articleId);
     }
