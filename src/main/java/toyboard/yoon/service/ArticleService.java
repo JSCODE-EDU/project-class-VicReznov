@@ -7,6 +7,9 @@ import toyboard.yoon.dto.ArticleDto;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ArticleService {
 
@@ -19,5 +22,18 @@ public class ArticleService {
         this.articleRepository.save(article);
 
         return ArticleMapper.articleToDto(article);
+    }
+
+    public List<ArticleDto> getArticles() {
+        List<Article> articles = articleRepository.findAll();
+
+        List<ArticleDto> articleDtos = new ArrayList<>();
+        for(Article article : articles) {
+            ArticleDto articleDto = ArticleMapper.articleToDto(article);
+
+            articleDtos.add(articleDto);
+        }
+
+        return articleDtos;
     }
 }
