@@ -29,14 +29,14 @@ public class ArticleService {
         return ArticleMapper.articleToDto(article);
     }
 
-    public List<ArticleDto> getLimitedArticlesSortedByCreatedAtDesc(int limit) {
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        Pageable pageable = PageRequest.of(0, limit, sort);
-
-        List<Article> articles = articleRepository.findAllByOrderByCreatedAtDesc(pageable);
-
-        return ArticleMapper.articleToDtos(articles);
-    }
+//    public List<ArticleDto> getLimitedArticlesSortedByCreatedAtDesc(int limit) {
+//        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+//        Pageable pageable = PageRequest.of(0, limit, sort);
+//
+//        List<Article> articles = articleRepository.findAllByOrderByCreatedAtDesc(pageable);
+//
+//        return ArticleMapper.articleToDtos(articles);
+//    }
 
     public ArticleDto getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
@@ -49,6 +49,15 @@ public class ArticleService {
         }
 
         return articleDto;
+    }
+
+    public List<ArticleDto> searchArticlesByKeyword(String keyword, int limit) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(0, limit, sort);
+
+        List<Article> articles = articleRepository.findByTitleContainingOrderByCreatedAtDesc(keyword, pageable);
+
+        return ArticleMapper.articleToDtos(articles);
     }
 
     public ArticleDto updateArticle(Long articleId, ArticleDto articleDto) {
