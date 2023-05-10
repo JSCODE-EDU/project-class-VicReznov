@@ -1,6 +1,9 @@
 package toyboard.yoon.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import toyboard.yoon.domain.Article;
 import toyboard.yoon.dto.ArticleDto;
@@ -26,17 +29,13 @@ public class ArticleService {
         return ArticleMapper.articleToDto(article);
     }
 
-    public List<ArticleDto> getArticles() {
-        List<Article> articles = articleRepository.findAll();
+    public List<ArticleDto> getLimitedArticlesSortedByCreatedAtDesc(int limit) {
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        Pageable pageable = PageRequest.of(0, limit, sort);
 
-        List<ArticleDto> articleDtos = new ArrayList<>();
-        for(Article article : articles) {
-            ArticleDto articleDto = ArticleMapper.articleToDto(article);
+        List<Article> articles = articleRepository.findAllByOrderByCreatedAtDesc(pageable);
 
-            articleDtos.add(articleDto);
-        }
-
-        return articleDtos;
+        return ArticleMapper.articleToDtos(articles);
     }
 
     public ArticleDto getArticle(Long articleId) {
