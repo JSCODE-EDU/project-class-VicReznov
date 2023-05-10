@@ -24,8 +24,8 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleDto>> getArticles() {
-        List<ArticleDto> result = articleService.getArticles();
+    public ResponseEntity<List<ArticleDto>> getLimitedSortedArticles(@RequestParam(defaultValue = "100") int limit) {
+        List<ArticleDto> result = articleService.getLimitedArticlesSortedByCreatedAtDesc(limit);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
