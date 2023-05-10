@@ -40,15 +40,12 @@ public class ArticleService {
 
     public ArticleDto getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
-        ArticleDto articleDto;
 
         if(article.isEmpty()) {
-            articleDto = new ArticleDto();
-        } else {
-            articleDto = ArticleMapper.articleToDto(article.get());
+            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
         }
 
-        return articleDto;
+        return ArticleMapper.articleToDto(article.get());
     }
 
     public List<ArticleDto> searchArticlesByKeyword(String keyword, int limit) {

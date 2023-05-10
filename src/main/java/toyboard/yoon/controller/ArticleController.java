@@ -1,5 +1,6 @@
 package toyboard.yoon.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import toyboard.yoon.service.ArticleService;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
@@ -33,7 +35,13 @@ public class ArticleController {
 
     @GetMapping(value = "/{articleId}")
     public ResponseEntity<ArticleDto> getArticle(@PathVariable long articleId) {
-        ArticleDto result = articleService.getArticle(articleId);
+        ArticleDto result;
+        try {
+            result = articleService.getArticle(articleId);
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -41,9 +49,15 @@ public class ArticleController {
 
     @PutMapping(value = "/{articleId}")
     public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleDto articleDto) {
-        ArticleDto result = articleService.updateArticle(articleId, articleDto);
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        try {
+            ArticleDto result = articleService.updateArticle(articleId, articleDto);
+            return new ResponseEntity<>(result, HttpStatus.OK);
+        } catch (NoSuchElementException e) {
+            log.error(e.getMessage());
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
     }
 
     @DeleteMapping(value = "/{articleId}")
