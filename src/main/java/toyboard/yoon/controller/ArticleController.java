@@ -24,8 +24,9 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleDto>> getLimitedSortedArticles(@RequestParam(defaultValue = "100") int limit) {
-        List<ArticleDto> result = articleService.getLimitedArticlesSortedByCreatedAtDesc(limit);
+    public ResponseEntity<List<ArticleDto>> getLimitedSortedArticlesOfKeyword(@RequestParam(defaultValue = "") String keyword,
+                                                                              @RequestParam(defaultValue = "100") int limit) {
+        List<ArticleDto> result = articleService.searchArticlesByKeyword(keyword, limit);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
@@ -36,6 +37,7 @@ public class ArticleController {
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
 
     @PutMapping(value = "/{articleId}")
     public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleDto articleDto) {
