@@ -1,10 +1,12 @@
 package toyboard.yoon.service;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import toyboard.yoon.domain.Article;
 import toyboard.yoon.dto.ArticleDto;
 import toyboard.yoon.mapper.ArticleMapper;
@@ -16,11 +18,13 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArticleService {
 
-    @Autowired
-    ArticleRepository articleRepository;
+    private final ArticleRepository articleRepository;
 
+    @Transactional
     public ArticleDto createArticle(ArticleDto articleDto) {
         Article article = ArticleMapper.dtoToArticle(articleDto);
 
@@ -57,6 +61,7 @@ public class ArticleService {
         return ArticleMapper.articleToDtos(articles);
     }
 
+    @Transactional
     public ArticleDto updateArticle(Long articleId, ArticleDto articleDto) {
         Optional<Article> article = articleRepository.findById(articleId);
 
@@ -74,6 +79,7 @@ public class ArticleService {
         return ArticleMapper.articleToDto(updateArticle);
     }
 
+    @Transactional
     public void deleteArticle(Long articleId) {
         articleRepository.deleteById(articleId);
     }

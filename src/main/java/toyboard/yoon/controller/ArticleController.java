@@ -1,5 +1,6 @@
 package toyboard.yoon.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,11 +14,11 @@ import java.util.NoSuchElementException;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/articles")
 public class ArticleController {
 
-    @Autowired
-    ArticleService articleService;
+    private final ArticleService articleService;
 
     @PostMapping
     public ResponseEntity<ArticleDto> createArticle(@RequestBody final ArticleDto articleDto) {

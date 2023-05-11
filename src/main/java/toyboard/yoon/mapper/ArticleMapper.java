@@ -10,14 +10,13 @@ import java.util.List;
 public class ArticleMapper {
 
     public static ArticleDto articleToDto(Article article) {
-        ArticleDto articleDto = new ArticleDto();
-
-        articleDto.setArticleId(article.getArticleId());
-        articleDto.setTitle(article.getTitle());
-        articleDto.setContents(article.getContents());
-        articleDto.setAuthor(article.getAuthor());
-//        articleDto.setPassword(article.getPassword());
-        articleDto.setCreatedAt(article.getCreatedAt());
+        ArticleDto articleDto = ArticleDto.builder()
+                .articleId(article.getArticleId())
+                .title(article.getTitle())
+                .contents(article.getContents())
+                .author(article.getTitle())
+                .createdAt(article.getCreatedAt())
+                .build();
 
         return articleDto;
     }
