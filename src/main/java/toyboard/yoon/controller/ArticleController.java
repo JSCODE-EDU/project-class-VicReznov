@@ -2,11 +2,11 @@ package toyboard.yoon.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import toyboard.yoon.dto.ArticleDto;
+import toyboard.yoon.dto.article.ArticleRequestDto;
+import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.service.ArticleService;
 
 import java.util.List;
@@ -21,22 +21,22 @@ public class ArticleController {
     private final ArticleService articleService;
 
     @PostMapping
-    public ResponseEntity<ArticleDto> createArticle(@RequestBody final ArticleDto articleDto) {
-        ArticleDto savedArticleDto = articleService.createArticle(articleDto);
+    public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody final ArticleRequestDto articleDto) {
+        ArticleResponseDto savedArticleDto = articleService.createArticle(articleDto);
         return new ResponseEntity<>(savedArticleDto, HttpStatus.OK);
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleDto>> getLimitedSortedArticlesOfKeyword(@RequestParam(defaultValue = "") String keyword,
+    public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(@RequestParam(defaultValue = "") String keyword,
                                                                               @RequestParam(defaultValue = "100") int limit) {
-        List<ArticleDto> result = articleService.searchArticlesByKeyword(keyword, limit);
+        List<ArticleResponseDto> result = articleService.searchArticlesByKeyword(keyword, limit);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleDto> getArticle(@PathVariable long articleId) {
-        ArticleDto result;
+    public ResponseEntity<ArticleResponseDto> getArticle(@PathVariable long articleId) {
+        ArticleResponseDto result;
         try {
             result = articleService.getArticle(articleId);
         } catch (NoSuchElementException e) {
@@ -49,10 +49,10 @@ public class ArticleController {
 
 
     @PutMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleDto articleDto) {
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleRequestDto articleDto) {
 
         try {
-            ArticleDto result = articleService.updateArticle(articleId, articleDto);
+            ArticleResponseDto result = articleService.updateArticle(articleId, articleDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (NoSuchElementException e) {
             log.error(e.getMessage());

@@ -1,18 +1,17 @@
 package toyboard.yoon.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toyboard.yoon.domain.Article;
-import toyboard.yoon.dto.ArticleDto;
+import toyboard.yoon.dto.article.ArticleRequestDto;
+import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -25,7 +24,7 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
 
     @Transactional
-    public ArticleDto createArticle(ArticleDto articleDto) {
+    public ArticleResponseDto createArticle(ArticleRequestDto articleDto) {
         Article article = ArticleMapper.dtoToArticle(articleDto);
 
         this.articleRepository.save(article);
@@ -33,16 +32,7 @@ public class ArticleService {
         return ArticleMapper.articleToDto(article);
     }
 
-//    public List<ArticleDto> getLimitedArticlesSortedByCreatedAtDesc(int limit) {
-//        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-//        Pageable pageable = PageRequest.of(0, limit, sort);
-//
-//        List<Article> articles = articleRepository.findAllByOrderByCreatedAtDesc(pageable);
-//
-//        return ArticleMapper.articleToDtos(articles);
-//    }
-
-    public ArticleDto getArticle(Long articleId) {
+    public ArticleResponseDto getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
@@ -52,7 +42,7 @@ public class ArticleService {
         return ArticleMapper.articleToDto(article.get());
     }
 
-    public List<ArticleDto> searchArticlesByKeyword(String keyword, int limit) {
+    public List<ArticleResponseDto> searchArticlesByKeyword(String keyword, int limit) {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(0, limit, sort);
 
@@ -62,7 +52,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleDto updateArticle(Long articleId, ArticleDto articleDto) {
+    public ArticleResponseDto updateArticle(Long articleId, ArticleRequestDto articleDto) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {

@@ -1,17 +1,16 @@
-package toyboard.yoon.dto;
+package toyboard.yoon.dto.article;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import java.util.Date;
 
-@Setter
 @Getter
+@Setter
 @NoArgsConstructor
-public class ArticleDto {
+public class ArticleResponseDto {
 
     private Long articleId;
     private String title;
@@ -21,7 +20,7 @@ public class ArticleDto {
     private Date createdAt;
 
     @Builder
-    public ArticleDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
+    public ArticleResponseDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
         this.articleId = articleId;
         this.title = title;
         this.contents = contents;

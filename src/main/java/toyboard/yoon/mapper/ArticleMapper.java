@@ -1,16 +1,16 @@
 package toyboard.yoon.mapper;
 
 import toyboard.yoon.domain.Article;
-import toyboard.yoon.dto.ArticleDto;
+import toyboard.yoon.dto.article.ArticleRequestDto;
+import toyboard.yoon.dto.article.ArticleResponseDto;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class ArticleMapper {
 
-    public static ArticleDto articleToDto(Article article) {
-        ArticleDto articleDto = ArticleDto.builder()
+    public static ArticleResponseDto articleToDto(Article article) {
+        ArticleResponseDto articleDto = ArticleResponseDto.builder()
                 .articleId(article.getArticleId())
                 .title(article.getTitle())
                 .contents(article.getContents())
@@ -21,18 +21,18 @@ public class ArticleMapper {
         return articleDto;
     }
 
-    public static List<ArticleDto> articleToDtos(List<Article> articles) {
-        List<ArticleDto> articleDtos = new ArrayList<>();
+    public static List<ArticleResponseDto> articleToDtos(List<Article> articles) {
+        List<ArticleResponseDto> articleDtos = new ArrayList<>();
 
         for(Article article : articles) {
-            ArticleDto articleDto = articleToDto(article);
+            ArticleResponseDto articleDto = articleToDto(article);
             articleDtos.add(articleDto);
         }
 
         return articleDtos;
     }
 
-    public static Article dtoToArticle(ArticleDto articleDto) {
+    public static Article dtoToArticle(ArticleRequestDto articleDto) {
         Article article = new Article();
 
         article.setTitle(articleDto.getTitle());
