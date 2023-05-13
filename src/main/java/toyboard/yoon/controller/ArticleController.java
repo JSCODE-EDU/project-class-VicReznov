@@ -24,7 +24,14 @@ public class ArticleController {
 
     @PostMapping
     public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody final ArticleRequestDto articleDto) {
-        ArticleResponseDto savedArticleDto = articleService.createArticle(articleDto);
+        ArticleResponseDto savedArticleDto;
+        try {
+            savedArticleDto = articleService.createArticle(articleDto);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArticleResponseDto(e.getMessage()));
+        }
+
         return new ResponseEntity<>(savedArticleDto, HttpStatus.OK);
     }
 
