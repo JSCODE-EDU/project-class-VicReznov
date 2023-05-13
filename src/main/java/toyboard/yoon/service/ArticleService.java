@@ -12,6 +12,7 @@ import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -36,7 +37,7 @@ public class ArticleService {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
         }
 
         return ArticleMapper.articleToDto(article.get());
@@ -56,7 +57,7 @@ public class ArticleService {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
         }
 
         Article updateArticle = article.get();

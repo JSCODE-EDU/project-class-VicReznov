@@ -9,6 +9,7 @@ import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.service.ArticleService;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -27,19 +28,20 @@ public class ArticleController {
     }
 
     @GetMapping
-    public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(@RequestParam(defaultValue = "") String keyword,
-                                                                              @RequestParam(defaultValue = "100") int limit) {
+    public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(
+                                                        @RequestParam(defaultValue = "") String keyword,
+                                                        @RequestParam(defaultValue = "100") int limit) {
         List<ArticleResponseDto> result = articleService.searchArticlesByKeyword(keyword, limit);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleResponseDto> getArticle(@PathVariable long articleId) {
+    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable long articleId) {
         ArticleResponseDto result;
         try {
             result = articleService.getArticle(articleId);
-        } catch (NoSuchElementException e) {
+        } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -49,12 +51,13 @@ public class ArticleController {
 
 
     @PutMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId, @RequestBody ArticleRequestDto articleDto) {
+    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId,
+                                                            @RequestBody ArticleRequestDto articleDto) {
 
         try {
             ArticleResponseDto result = articleService.updateArticle(articleId, articleDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
-        } catch (NoSuchElementException e) {
+        } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
