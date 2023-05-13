@@ -12,7 +12,6 @@ import toyboard.yoon.service.ArticleService;
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Slf4j
 @RestController
@@ -37,7 +36,7 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(
-                                                        @RequestParam(defaultValue = "") String keyword,
+                                                        @RequestParam String keyword,
                                                         @RequestParam(defaultValue = "100") int limit) {
         List<ArticleResponseDto> result;
 
