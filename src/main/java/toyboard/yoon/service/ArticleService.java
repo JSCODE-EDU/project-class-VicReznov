@@ -72,6 +72,12 @@ public class ArticleService {
 
     @Transactional
     public void deleteArticle(Long articleId) {
+        Optional<Article> article = articleRepository.findById(articleId);
+
+        if(article.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+        }
+
         articleRepository.deleteById(articleId);
     }
 }

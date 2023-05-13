@@ -65,9 +65,14 @@ public class ArticleController {
     }
 
     @DeleteMapping(value = "/{articleId}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable long articleId) {
-        articleService.deleteArticle(articleId);
+    public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable long articleId) {
 
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        try {
+            articleService.deleteArticle(articleId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (EntityNotFoundException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArticleResponseDto(e.getMessage()));
+        }
     }
 }
