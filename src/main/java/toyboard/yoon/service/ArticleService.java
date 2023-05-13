@@ -22,6 +22,10 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class ArticleService {
 
+    final int MIN_KEYWORD_LENGTH = 1;
+
+    final String KEYWORD_LENGTH_ERROR = String.format("검색하려는 단어의 길이는 %d 이상이어야 합니다.", MIN_KEYWORD_LENGTH);
+
     private final ArticleRepository articleRepository;
 
     @Transactional
@@ -44,6 +48,9 @@ public class ArticleService {
     }
 
     public List<ArticleResponseDto> searchArticlesByKeyword(String keyword, int limit) {
+
+        verifyKeyword(keyword);
+
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(0, limit, sort);
 
@@ -79,5 +86,22 @@ public class ArticleService {
         }
 
         articleRepository.deleteById(articleId);
+    }
+
+    private void verifyKeyword(String keyword) {
+        verifyKeyWordLength(keyword);
+        verifyKBlank(keyword);
+    }
+
+    private void verifyKeyWordLength(String keyword) {
+        if(keyword.length() < MIN_KEYWORD_LENGTH) {
+            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+        }
+    }
+
+    private void verifyKBlank(String keyword) {
+        if(keyword.trim().length() == 0) {
+            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+        }
     }
 }

@@ -10,6 +10,7 @@ import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.service.ArticleService;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -31,7 +32,14 @@ public class ArticleController {
     public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(
                                                         @RequestParam(defaultValue = "") String keyword,
                                                         @RequestParam(defaultValue = "100") int limit) {
-        List<ArticleResponseDto> result = articleService.searchArticlesByKeyword(keyword, limit);
+        List<ArticleResponseDto> result;
+
+        try {
+            result = articleService.searchArticlesByKeyword(keyword, limit);
+        } catch (IllegalArgumentException e) {
+            log.error(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.singletonList(new ArticleResponseDto(e.getMessage())));
+        }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
