@@ -36,7 +36,7 @@ public class ArticleController {
 
     @GetMapping
     public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(
-                                                        @RequestParam String keyword,
+                                                        @RequestParam(required = false) String keyword,
                                                         @RequestParam(defaultValue = "100") int limit) {
         List<ArticleResponseDto> result;
 
