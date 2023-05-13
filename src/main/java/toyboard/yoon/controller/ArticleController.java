@@ -43,7 +43,7 @@ public class ArticleController {
             result = articleService.getArticle(articleId);
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArticleResponseDto(e.getMessage()));
         }
 
         return new ResponseEntity<>(result, HttpStatus.OK);
@@ -59,7 +59,7 @@ public class ArticleController {
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArticleResponseDto(e.getMessage()));
         }
 
     }

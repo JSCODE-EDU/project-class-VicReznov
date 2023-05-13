@@ -19,6 +19,8 @@ public class ArticleResponseDto {
     private String password;
     private Date createdAt;
 
+    private String message;
+
     @Builder
     public ArticleResponseDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
         this.articleId = articleId;
@@ -27,5 +29,9 @@ public class ArticleResponseDto {
         this.author = author;
         this.password = password;
         this.createdAt = createdAt;
+    }
+
+    public ArticleResponseDto(String message) {
+        this.message = message;
     }
 }
