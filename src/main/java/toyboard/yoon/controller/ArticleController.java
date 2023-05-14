@@ -1,5 +1,10 @@
 package toyboard.yoon.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,6 +26,14 @@ public class ArticleController {
 
     private final ArticleService articleService;
 
+    @Operation(summary = "게시글 생성 요청", description = "게시글이 생성됩니다.", tags = { "ArticleController" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PostMapping
     public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody final ArticleRequestDto articleDto) {
         ArticleResponseDto savedArticleDto;
@@ -34,6 +47,14 @@ public class ArticleController {
         return new ResponseEntity<>(savedArticleDto, HttpStatus.OK);
     }
 
+    @Operation(summary = "게시글 조회 요청", description = "특정 문자를 포함한 게시글이 최대 100개 조회됩니다.", tags = { "ArticleController" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @GetMapping
     public ResponseEntity<List<ArticleResponseDto>> getLimitedSortedArticlesOfKeyword(
                                                         @RequestParam(required = false) String keyword,
@@ -50,6 +71,14 @@ public class ArticleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    @Operation(summary = "특정 게시글 조회 요청", description = "게시글 id를 통해 조회됩니다.", tags = { "ArticleController" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @GetMapping(value = "/{articleId}")
     public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable long articleId) {
         ArticleResponseDto result;
@@ -63,7 +92,14 @@ public class ArticleController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-
+    @Operation(summary = "게시글 수정 요청", description = "게시글을 수정됩니다.", tags = { "ArticleController" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @PutMapping(value = "/{articleId}")
     public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId,
                                                             @RequestBody ArticleRequestDto articleDto) {
@@ -78,12 +114,20 @@ public class ArticleController {
 
     }
 
+    @Operation(summary = "게시글 삭제 요청", description = "게시글이 삭제됩니다.", tags = { "ArticleController" })
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "OK",
+                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+            @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
+            @ApiResponse(responseCode = "404", description = "NOT FOUND"),
+            @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
+    })
     @DeleteMapping(value = "/{articleId}")
     public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable long articleId) {
 
         try {
             articleService.deleteArticle(articleId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity<>(HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ArticleResponseDto(e.getMessage()));
