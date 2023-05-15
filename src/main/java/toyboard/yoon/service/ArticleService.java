@@ -54,7 +54,7 @@ public class ArticleService {
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(0, limit, sort);
 
-        List<Article> articles = articleRepository.findByTitleContainingOrderByCreatedAtDesc(keyword, pageable);
+        List<Article> articles = articleRepository.findByTitleContaining(keyword, pageable);
 
         return ArticleMapper.articleToDtos(articles);
     }
