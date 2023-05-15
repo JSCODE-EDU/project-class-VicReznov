@@ -1,27 +1,35 @@
 package toyboard.yoon.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import toyboard.yoon.domain.Article;
-import toyboard.yoon.dto.ArticleDto;
+import toyboard.yoon.dto.article.ArticleRequestDto;
+import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
-import java.util.ArrayList;
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArticleService {
 
-    @Autowired
-    ArticleRepository articleRepository;
+    final int MIN_KEYWORD_LENGTH = 1;
 
-    public ArticleDto createArticle(ArticleDto articleDto) {
+    final String KEYWORD_LENGTH_ERROR = String.format("검색하려는 단어의 길이는 %d 이상이어야 합니다.", MIN_KEYWORD_LENGTH);
+
+    private final ArticleRepository articleRepository;
+
+    @Transactional
+    public ArticleResponseDto createArticle(ArticleRequestDto articleDto) {
         Article article = ArticleMapper.dtoToArticle(articleDto);
 
         this.articleRepository.save(article);
@@ -29,26 +37,20 @@ public class ArticleService {
         return ArticleMapper.articleToDto(article);
     }
 
-//    public List<ArticleDto> getLimitedArticlesSortedByCreatedAtDesc(int limit) {
-//        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-//        Pageable pageable = PageRequest.of(0, limit, sort);
-//
-//        List<Article> articles = articleRepository.findAllByOrderByCreatedAtDesc(pageable);
-//
-//        return ArticleMapper.articleToDtos(articles);
-//    }
-
-    public ArticleDto getArticle(Long articleId) {
+    public ArticleResponseDto getArticle(Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
         }
 
         return ArticleMapper.articleToDto(article.get());
     }
 
-    public List<ArticleDto> searchArticlesByKeyword(String keyword, int limit) {
+    public List<ArticleResponseDto> searchArticlesByKeyword(String keyword, int limit) {
+
+        verifyKeyword(keyword);
+
         Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
         Pageable pageable = PageRequest.of(0, limit, sort);
 
@@ -57,11 +59,12 @@ public class ArticleService {
         return ArticleMapper.articleToDtos(articles);
     }
 
-    public ArticleDto updateArticle(Long articleId, ArticleDto articleDto) {
+    @Transactional
+    public ArticleResponseDto updateArticle(Long articleId, ArticleRequestDto articleDto) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new NoSuchElementException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
         }
 
         Article updateArticle = article.get();
@@ -74,7 +77,31 @@ public class ArticleService {
         return ArticleMapper.articleToDto(updateArticle);
     }
 
+    @Transactional
     public void deleteArticle(Long articleId) {
+        Optional<Article> article = articleRepository.findById(articleId);
+
+        if(article.isEmpty()) {
+            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+        }
+
         articleRepository.deleteById(articleId);
+    }
+
+    private void verifyKeyword(String keyword) {
+        verifyKeyWordLength(keyword);
+        verifyKBlank(keyword);
+    }
+
+    private void verifyKeyWordLength(String keyword) {
+        if(keyword.length() < MIN_KEYWORD_LENGTH) {
+            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+        }
+    }
+
+    private void verifyKBlank(String keyword) {
+        if(keyword.trim().length() == 0) {
+            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+        }
     }
 }
