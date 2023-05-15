@@ -1,6 +1,8 @@
 package toyboard.yoon.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -48,6 +50,10 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 조회 요청", description = "특정 문자를 포함한 게시글이 최대 100개 조회됩니다.", tags = { "ArticleController" })
+    @Parameters({
+            @Parameter(name = "keyword", description = "조회할 게시물이 포함한 keyword"),
+            @Parameter(name = "limit", description = "조회할 게시물의 최대 개수")
+    })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(schema = @Schema(implementation = ArticleController.class))),
@@ -72,6 +78,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "특정 게시글 조회 요청", description = "게시글 id를 통해 조회됩니다.", tags = { "ArticleController" })
+    @Parameter(name = "articleId", description = "조회할 게시물의 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(schema = @Schema(implementation = ArticleController.class))),
@@ -93,6 +100,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 수정 요청", description = "게시글을 수정됩니다.", tags = { "ArticleController" })
+    @Parameter(name = "articleId", description = "수정할 게시글 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(schema = @Schema(implementation = ArticleController.class))),
@@ -115,6 +123,7 @@ public class ArticleController {
     }
 
     @Operation(summary = "게시글 삭제 요청", description = "게시글이 삭제됩니다.", tags = { "ArticleController" })
+    @Parameter(name = "articleId", description = "삭제할 게시글 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
                     content = @Content(schema = @Schema(implementation = ArticleController.class))),
