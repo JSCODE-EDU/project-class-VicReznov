@@ -31,7 +31,7 @@ public class ArticleController {
     @Operation(summary = "게시글 생성 요청", description = "게시글이 생성됩니다.", tags = { "ArticleController" })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+                    content = @Content(schema = @Schema(implementation = ArticleRequestDto.class))),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
@@ -56,7 +56,7 @@ public class ArticleController {
     })
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+                    content = @Content(schema = @Schema(implementation = ArticleRequestDto.class))),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
@@ -81,7 +81,7 @@ public class ArticleController {
     @Parameter(name = "articleId", description = "조회할 게시물의 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+                    content = @Content(schema = @Schema(implementation = ArticleRequestDto.class))),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
@@ -103,7 +103,7 @@ public class ArticleController {
     @Parameter(name = "articleId", description = "수정할 게시글 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+                    content = @Content(schema = @Schema(implementation = ArticleRequestDto.class))),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
@@ -126,7 +126,7 @@ public class ArticleController {
     @Parameter(name = "articleId", description = "삭제할 게시글 id")
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "OK",
-                    content = @Content(schema = @Schema(implementation = ArticleController.class))),
+                    content = @Content(schema = @Schema(implementation = ArticleRequestDto.class))),
             @ApiResponse(responseCode = "400", description = "BAD REQUEST"),
             @ApiResponse(responseCode = "404", description = "NOT FOUND"),
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
