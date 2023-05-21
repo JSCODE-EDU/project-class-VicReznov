@@ -3,7 +3,7 @@ package toyboard.yoon.exhandler.advice;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import toyboard.exception.RestApiException;
+import toyboard.yoon.exception.RestApiException;
 import toyboard.yoon.exhandler.ErrorResponse;
 
 @RestControllerAdvice

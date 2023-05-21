@@ -6,7 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import toyboard.exception.RestApiException;
+import toyboard.yoon.exception.RestApiException;
 import toyboard.yoon.domain.Article;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
@@ -14,9 +14,7 @@ import toyboard.yoon.exhandler.advice.GlobalErrorCode;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service

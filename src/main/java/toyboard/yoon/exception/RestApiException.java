@@ -1,4 +1,4 @@
-package toyboard.exception;
+package toyboard.yoon.exception;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
