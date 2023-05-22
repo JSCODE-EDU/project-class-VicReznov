@@ -33,9 +33,6 @@ public class Article {
     @Column(unique = true, nullable = false)
     private String author;
 
-    @Column(nullable = false)
-    private String password;
-
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
@@ -52,10 +49,6 @@ public class Article {
 
     public void setAuthor(String author) {
         this.author = author;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public void setCreatedAt(Date createdAt) {

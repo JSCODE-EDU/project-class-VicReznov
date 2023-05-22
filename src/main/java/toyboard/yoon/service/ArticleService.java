@@ -6,15 +6,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import toyboard.yoon.exception.RestApiException;
 import toyboard.yoon.domain.Article;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
+import toyboard.yoon.exhandler.advice.GlobalErrorCode;
 import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Service
@@ -41,7 +41,9 @@ public class ArticleService {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new RestApiException(GlobalErrorCode.NOT_FOUND, String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new RestApiException(GlobalErrorCode.NOT_FOUND);
         }
 
         return ArticleMapper.articleToDto(article.get());
@@ -64,7 +66,9 @@ public class ArticleService {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new RestApiException(GlobalErrorCode.NOT_FOUND, String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new RestApiException(GlobalErrorCode.NOT_FOUND);
         }
 
         Article updateArticle = article.get();
@@ -82,7 +86,9 @@ public class ArticleService {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
-            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new EntityNotFoundException(String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+//            throw new RestApiException(GlobalErrorCode.NOT_FOUND, String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
+            throw new RestApiException(GlobalErrorCode.NOT_FOUND);
         }
 
         articleRepository.deleteById(articleId);
@@ -95,13 +101,15 @@ public class ArticleService {
 
     private void verifyKeyWordLength(String keyword) {
         if(keyword.length() < MIN_KEYWORD_LENGTH) {
-            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+//            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+            throw new RestApiException(GlobalErrorCode.METHOD_UNPROCESSABLE_ENTITY);
         }
     }
 
     private void verifyKBlank(String keyword) {
         if(keyword.trim().length() == 0) {
-            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+//            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
+            throw new RestApiException(GlobalErrorCode.METHOD_UNPROCESSABLE_ENTITY);
         }
     }
 }
