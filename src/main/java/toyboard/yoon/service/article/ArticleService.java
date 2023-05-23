@@ -1,4 +1,4 @@
-package toyboard.yoon.service;
+package toyboard.yoon.service.article;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -7,7 +7,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import toyboard.yoon.exception.RestApiException;
-import toyboard.yoon.domain.Article;
+import toyboard.yoon.entity.Article;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.exhandler.advice.GlobalErrorCode;

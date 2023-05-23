@@ -16,7 +16,6 @@ public class ArticleResponseDto {
     private String title;
     private String contents;
     private String author;
-    private String password;
     private Date createdAt;
 
     private String message;
@@ -27,7 +26,6 @@ public class ArticleResponseDto {
         this.title = title;
         this.contents = contents;
         this.author = author;
-        this.password = password;
         this.createdAt = createdAt;
     }
 

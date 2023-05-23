@@ -14,7 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
-import toyboard.yoon.service.ArticleService;
+import toyboard.yoon.service.article.ArticleService;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.Collections;

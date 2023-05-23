@@ -1,6 +1,6 @@
 package toyboard.yoon.mapper;
 
-import toyboard.yoon.domain.Article;
+import toyboard.yoon.entity.Article;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
 
@@ -38,7 +38,6 @@ public class ArticleMapper {
         article.setTitle(articleDto.getTitle());
         article.setContents(articleDto.getContents());
         article.setAuthor(articleDto.getAuthor());
-        article.setPassword(articleDto.getPassword());
         article.setCreatedAt(articleDto.getCreatedAt());
 
         return article;
