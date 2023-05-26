@@ -14,7 +14,6 @@ public class ArticleRequestDto {
     private String title;
     private String contents;
     private String author;
-    private String password;
     private Date createdAt;
 
     @Builder
@@ -23,7 +22,6 @@ public class ArticleRequestDto {
         this.title = title;
         this.contents = contents;
         this.author = author;
-        this.password = password;
         this.createdAt = createdAt;
     }
 }
