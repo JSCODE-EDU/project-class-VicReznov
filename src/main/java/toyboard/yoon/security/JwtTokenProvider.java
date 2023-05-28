@@ -22,7 +22,7 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
-    private String secretKey = "asdfsadfqwerwqrweqasfsadfqwerqwerzxvxzvxc";
+    private String secretKey = "asdfsadfqwerwqrweqasfsadfqwerqwerzxvxzvxcqwerqwsdfsxczvzxcfdsafwerwq";
     private final Key key= Keys.secretKeyFor(SignatureAlgorithm.HS256);;
 
     // 토큰 유효시간 30분

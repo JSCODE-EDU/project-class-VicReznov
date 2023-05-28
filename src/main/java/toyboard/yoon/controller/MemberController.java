@@ -1,11 +1,10 @@
 package toyboard.yoon.controller;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.member.MemberRequestDto;
 import toyboard.yoon.dto.member.MemberResponseDto;
 import toyboard.yoon.entity.Member;
@@ -13,9 +12,11 @@ import toyboard.yoon.enumeration.MemberRole;
 import toyboard.yoon.repository.MemberRepository;
 import toyboard.yoon.security.JwtTokenProvider;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api")
@@ -51,6 +52,22 @@ public class MemberController {
         return MemberResponseDto.builder()
                 .id(member.getId())
                 .token(token).build();
+    }
+
+    @GetMapping("/about")
+//    @PreAuthorize("hasRole('USER')")
+    public MemberResponseDto about(HttpServletRequest request) {
+        log.info("request log={}", request.getHeader("X-AUTH-TOKEN"));
+
+        String token = jwtTokenProvider.resolveToken(request);
+        String userPK = jwtTokenProvider.getUserPK(token);
+        Member member = memberRepository.findById(Long.parseLong(userPK))
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        return MemberResponseDto.builder()
+                .id(member.getId())
+                .email(member.getEmail())
+                .build();
     }
 
 
