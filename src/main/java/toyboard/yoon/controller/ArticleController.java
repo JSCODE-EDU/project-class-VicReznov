@@ -17,6 +17,7 @@ import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.service.article.ArticleService;
 
 import javax.persistence.EntityNotFoundException;
+import javax.validation.Valid;
 import java.util.Collections;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class ArticleController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PostMapping
-    public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody final ArticleRequestDto articleDto) {
+    public ResponseEntity<ArticleResponseDto> createArticle(@RequestBody @Valid final ArticleRequestDto articleDto) {
         ArticleResponseDto savedArticleDto;
         try {
             savedArticleDto = articleService.createArticle(articleDto);
@@ -110,7 +111,7 @@ public class ArticleController {
     })
     @PutMapping(value = "/{articleId}")
     public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId,
-                                                            @RequestBody ArticleRequestDto articleDto) {
+                                                            @RequestBody @Valid ArticleRequestDto articleDto) {
 
         try {
             ArticleResponseDto result = articleService.updateArticle(articleId, articleDto);
