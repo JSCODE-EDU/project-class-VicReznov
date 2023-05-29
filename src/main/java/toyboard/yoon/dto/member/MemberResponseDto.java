@@ -17,11 +17,14 @@ public class MemberResponseDto {
 
     private MemberRole memberRole;
 
+    private String token;
+
     @Builder
-    private MemberResponseDto(Long id, String email, String password, MemberRole memberRole) {
+    private MemberResponseDto(Long id, String email, String password, MemberRole memberRole, String token) {
         this.id = id;
         this.email = email;
         this.password = password;
         this.memberRole = memberRole;
+        this.token = token;
     }
 }
