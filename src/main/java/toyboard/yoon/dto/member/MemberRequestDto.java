@@ -1,7 +1,6 @@
 package toyboard.yoon.dto.member;
 
 import lombok.*;
-import toyboard.yoon.enumeration.MemberRole;
 
 @Getter
 @Setter
@@ -12,6 +11,5 @@ public class MemberRequestDto {
 
     private String password;
 
-    private MemberRole memberRole;
 
 }

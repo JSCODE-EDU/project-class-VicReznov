@@ -5,67 +5,82 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
-import toyboard.yoon.enumeration.MemberRole;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
-@Entity
 @Getter
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Member {
+@AllArgsConstructor
+@Entity
+public class Member implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     @NotBlank
     @Email
     @Pattern(regexp = "^([^@]+)@([^@]+)$", message = "E-mail에 @ 문자는 하나만 있어야 합니다.")
     private String email;
 
+    @Column(nullable = false)
     @NotBlank
-    @Min(8)
-    @Max(15)
     private String password;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private MemberRole memberRole;
+    @ElementCollection(fetch = FetchType.EAGER)
+    @Builder.Default
+    private List<String> roles = new ArrayList<>();
 
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
 
-    @Builder
-    private Member(Long id, String email, String password, MemberRole memberRole) {
-        this.id = id;
-        this.email = email;
-        this.password = password;
-        this.memberRole = memberRole;
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return this.roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    @Override
+    public String getUsername() {
+        return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    @Override
+    public String getPassword() {
+        return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
     }
 
-    public void setMemberRole(MemberRole memberRole) {
-        this.memberRole = memberRole;
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
     }
 
-    public void setCreatedAt(Date createdAt) {
-        this.createdAt = createdAt;
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
     }
 }
