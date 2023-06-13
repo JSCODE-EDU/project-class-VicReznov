@@ -70,18 +70,34 @@ public class JwtTokenProvider {
 
         Claims claims = parseClaims(accessToken);
 
-        if (claims.get("auth") == null) {
+        if (claims.get("roles") == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
         // 클레임에서 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get("auth").toString().split(","))
+                Arrays.stream(claims.get("roles").toString().split(","))
                         .map(SimpleGrantedAuthority::new)
                         .collect(Collectors.toList());
 
         UserDetails userDetails = memberDetailsService.loadUserByUsername(getUserPk(accessToken));
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+    }
+
+    public Long getMemberId(HttpServletRequest request) {
+
+        String accessToken = resolveToken(request);
+        log.info("resolveToken 성공");
+
+        Claims claims = parseClaims(accessToken);
+        log.info("claims parse 성공");
+
+        if (claims.get("userId") == null) {
+            log.info("userId가 null??");
+            throw new RuntimeException("id 정보가 없는 토큰입니다.");
+        }
+
+        return claims.get("userId", Long.class);
     }
 
     // 토큰에서 회원 정보 추출
@@ -93,6 +109,7 @@ public class JwtTokenProvider {
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if(StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")){
+            log.info("Bearer 떼는거 성공");
             return bearerToken.substring(7);
         }
         return null;
@@ -101,7 +118,8 @@ public class JwtTokenProvider {
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(jwtToken);
+            return true;
         } catch (MalformedJwtException e) {
             log.info("Invalid JWT Token", e);
             throw new JwtException("유효하지 않은 토큰입니다.");
@@ -118,12 +136,14 @@ public class JwtTokenProvider {
             log.info("JWT signature does not match locally computed signature.", e);
             throw new JwtException("JWT 서명이 로컬로 산정된 서명과 일치하지 않습니다.");
         }
-        return false;
+
+//        return false;
     }
 
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(accessToken).getBody();
+            log.info("parseClaims 들어옴");
+            return Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(accessToken).getBody();
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

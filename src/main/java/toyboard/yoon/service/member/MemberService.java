@@ -2,6 +2,7 @@ package toyboard.yoon.service.member;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,7 +11,10 @@ import toyboard.yoon.repository.MemberRepository;
 import toyboard.yoon.security.JwtTokenProvider;
 import toyboard.yoon.security.dto.*;
 
+import javax.servlet.http.HttpServletRequest;
 
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -44,8 +48,12 @@ public class MemberService {
         return jwtTokenProvider.createToken(member.getId(), member.getRoles().getAuthority());
     }
 
-    public UserInfoResponse findUserInfo(Long memberId){
-        Member member = memberRepository.findById(memberId)
+    public UserInfoResponse findUserInfo(HttpServletRequest httpRequest){
+
+        Long id = jwtTokenProvider.getMemberId(httpRequest);
+        log.error("provider 뒤");
+
+        Member member = memberRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
         return UserInfoResponse.builder()
