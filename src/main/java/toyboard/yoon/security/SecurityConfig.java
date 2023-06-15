@@ -31,7 +31,7 @@ public class SecurityConfig {
                 .authorizeRequests()// 요청에 대한 사용권한 체크
 //                .antMatchers("/**").permitAll()
                 .antMatchers("/members/signup", "/members/login").permitAll()
-                .antMatchers("/articles/**").hasRole("USER")
+//                .antMatchers("/articles/**").hasRole("USER")
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
