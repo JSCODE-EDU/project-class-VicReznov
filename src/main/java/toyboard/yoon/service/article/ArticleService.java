@@ -15,7 +15,6 @@ import toyboard.yoon.exhandler.advice.GlobalErrorCode;
 import toyboard.yoon.repository.ArticleRepository;
 import toyboard.yoon.repository.MemberRepository;
 
-import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,18 +28,18 @@ public class ArticleService {
     final String KEYWORD_LENGTH_ERROR = String.format("검색하려는 단어의 길이는 %d 이상이어야 합니다.", MIN_KEYWORD_LENGTH);
 
     private final ArticleRepository articleRepository;
-    private final MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto articleRequestDto) {
+    public ArticleResponseDto createArticle(ArticleRequestDto articleDto) {
         Article article = Article.builder()
-                .articleId(articleRequestDto.getArticleId())
-                .title(articleRequestDto.getTitle())
-                .contents(articleRequestDto.getContents())
+                .articleId(articleDto.getArticleId())
+                .title(articleDto.getTitle())
+                .contents(articleDto.getContents())
                 .build();
 
-        Member member = memberRepository.findById(articleRequestDto.getMemberId())
-                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        Member member = memberRepository.findById(articleDto.getMemberId())
+                .orElseThrow(() -> new IllegalArgumentException("Member not found"));
         article.setMember(member);
 
         Article savedArticle = articleRepository.save(article);
