@@ -23,7 +23,7 @@ public class CommentController {
     public ResponseEntity<CommentSaveResponse> addComment(@PathVariable final Long postId,
                                                           @Valid @RequestBody CommentSaveRequest commentSaveRequest) {
         CommentSaveResponse commentSaveResponse = commentService.addComment(postId, commentSaveRequest);
-        
+
         return ResponseEntity.status(HttpStatus.CREATED).body(commentSaveResponse);
     }
 }

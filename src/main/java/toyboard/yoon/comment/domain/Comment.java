@@ -28,7 +28,7 @@ public class Comment {
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "article_id")
     private Article article;
 
     protected Comment() {
