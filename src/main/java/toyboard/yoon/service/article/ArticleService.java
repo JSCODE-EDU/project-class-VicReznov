@@ -6,14 +6,16 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import toyboard.yoon.entity.member.Member;
 import toyboard.yoon.exception.RestApiException;
 import toyboard.yoon.entity.Article;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
 import toyboard.yoon.exhandler.advice.GlobalErrorCode;
-import toyboard.yoon.mapper.ArticleMapper;
 import toyboard.yoon.repository.ArticleRepository;
+import toyboard.yoon.repository.MemberRepository;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,14 +29,28 @@ public class ArticleService {
     final String KEYWORD_LENGTH_ERROR = String.format("검색하려는 단어의 길이는 %d 이상이어야 합니다.", MIN_KEYWORD_LENGTH);
 
     private final ArticleRepository articleRepository;
+    private final MemberRepository memberRepository;
 
     @Transactional
-    public ArticleResponseDto createArticle(ArticleRequestDto articleDto) {
-        Article article = ArticleMapper.dtoToArticle(articleDto);
+    public ArticleResponseDto createArticle(ArticleRequestDto articleRequestDto) {
+        Article article = Article.builder()
+                .articleId(articleRequestDto.getArticleId())
+                .title(articleRequestDto.getTitle())
+                .contents(articleRequestDto.getContents())
+                .build();
 
-        this.articleRepository.save(article);
+        Member member = memberRepository.findById(articleRequestDto.getMemberId())
+                .orElseThrow(() -> new EntityNotFoundException("Member not found"));
+        article.setMember(member);
 
-        return ArticleMapper.articleToDto(article);
+        Article savedArticle = articleRepository.save(article);
+
+        return ArticleResponseDto.builder()
+                .articleId(savedArticle.getArticleId())
+                .title(savedArticle.getTitle())
+                .contents(savedArticle.getContents())
+                .createdAt(savedArticle.getCreatedAt())
+                .build();
     }
 
     public ArticleResponseDto getArticle(Long articleId) {
@@ -46,7 +62,12 @@ public class ArticleService {
             throw new RestApiException(GlobalErrorCode.NOT_FOUND);
         }
 
-        return ArticleMapper.articleToDto(article.get());
+        return ArticleResponseDto.builder()
+                .articleId(article.get().getArticleId())
+                .title(article.get().getTitle())
+                .contents(article.get().getContents())
+                .createdAt(article.get().getCreatedAt())
+                .build();
     }
 
     public List<ArticleResponseDto> searchArticlesByKeyword(String keyword, int limit) {
@@ -58,7 +79,7 @@ public class ArticleService {
 
         List<Article> articles = articleRepository.findByTitleContaining(keyword, pageable);
 
-        return ArticleMapper.articleToDtos(articles);
+        return null;
     }
 
     @Transactional
@@ -74,11 +95,15 @@ public class ArticleService {
         Article updateArticle = article.get();
         updateArticle.setTitle(articleDto.getTitle());
         updateArticle.setContents(articleDto.getContents());
-        updateArticle.setAuthor(articleDto.getAuthor());
 
         articleRepository.save(updateArticle);
 
-        return ArticleMapper.articleToDto(updateArticle);
+        return ArticleResponseDto.builder()
+                .articleId(article.get().getArticleId())
+                .title(article.get().getTitle())
+                .contents(article.get().getContents())
+                .createdAt(article.get().getCreatedAt())
+                .build();
     }
 
     @Transactional

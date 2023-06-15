@@ -15,17 +15,15 @@ public class ArticleResponseDto {
     private Long articleId;
     private String title;
     private String contents;
-    private String author;
     private Date createdAt;
 
     private String message;
 
     @Builder
-    public ArticleResponseDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
+    public ArticleResponseDto(Long articleId, String title, String contents, Date createdAt) {
         this.articleId = articleId;
         this.title = title;
         this.contents = contents;
-        this.author = author;
         this.createdAt = createdAt;
     }
 

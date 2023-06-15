@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotEmpty;
 import java.util.Date;
 
 @Getter
@@ -14,24 +15,19 @@ public class ArticleRequestDto {
 
     private Long articleId;
 
-    @Max(15)
-    @Min(1)
+    @NotEmpty(message = "제목을 입력해야합니다.")
     private String title;
 
-    @Max(1000)
-    @Min(1)
+    @NotEmpty(message = "내용을 입력해야합니다.")
     private String contents;
 
-    private String author;
-
-    private Date createdAt;
+    private Long memberId;
 
     @Builder
-    public ArticleRequestDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
+    public ArticleRequestDto(Long articleId, String title, String contents, Long memberId) {
         this.articleId = articleId;
         this.title = title;
         this.contents = contents;
-        this.author = author;
-        this.createdAt = createdAt;
+        this.memberId = memberId;
     }
 }

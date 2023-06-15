@@ -32,6 +32,7 @@ public class SecurityConfig {
 //                .antMatchers("/**").permitAll()
                 .antMatchers("/members/signup", "/members/login").permitAll()
 //                .antMatchers("/articles/**").hasRole("USER")
+                .antMatchers("/articles/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
