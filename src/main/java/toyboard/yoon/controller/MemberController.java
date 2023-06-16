@@ -9,7 +9,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.member.MemberRequestDto;
 import toyboard.yoon.dto.member.MemberResponseDto;
+import toyboard.yoon.entity.member.Member;
 import toyboard.yoon.repository.MemberRepository;
+import toyboard.yoon.security.JwtAuth;
 import toyboard.yoon.security.dto.*;
 import toyboard.yoon.service.member.MemberService;
 
@@ -35,8 +37,8 @@ public class MemberController {
     }
 
     @GetMapping("/info")
-    public ResponseEntity<UserInfoResponse> findUserInfo(HttpServletRequest httpRequest) {
-        return ResponseEntity.ok(memberService.findUserInfo(httpRequest));
+    public ResponseEntity<UserInfoResponse> findUserInfo(@JwtAuth Member member) {
+        return ResponseEntity.ok(memberService.findUserInfo(member));
     }
 
 }

@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    @Query("SELECT distinct c from Article a left join fetch a.member where a.post = :post")
+    @Query("SELECT distinct c from Comment c left join fetch c.member where c.article = :article")
     List<Comment> findCommentsByArticle(Article article);
 }

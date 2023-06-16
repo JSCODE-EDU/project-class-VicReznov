@@ -48,18 +48,18 @@ public class MemberService {
         return jwtTokenProvider.createToken(member.getId(), member.getRoles().getAuthority());
     }
 
-    public UserInfoResponse findUserInfo(HttpServletRequest httpRequest){
+    public UserInfoResponse findUserInfo(Member member){
 
-        Long id = jwtTokenProvider.getMemberId(httpRequest);
+        Long id = member.getId();
         log.error("provider 뒤");
 
-        Member member = memberRepository.findById(id)
+        Member memberResult = memberRepository.findById(id)
                 .orElseThrow(IllegalArgumentException::new);
 
         return UserInfoResponse.builder()
-                .id(member.getId())
-                .email(member.getEmail().getValue())
-                .regTime(member.getRegTime())
+                .id(memberResult.getId())
+                .email(memberResult.getEmail().getValue())
+                .regTime(memberResult.getRegTime())
                 .build();
     }
 
