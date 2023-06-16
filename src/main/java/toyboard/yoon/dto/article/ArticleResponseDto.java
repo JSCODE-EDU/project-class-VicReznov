@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import toyboard.yoon.entity.member.Member;
 
 import java.util.Date;
 
@@ -15,18 +16,17 @@ public class ArticleResponseDto {
     private Long articleId;
     private String title;
     private String contents;
-    private String author;
     private Date createdAt;
-
+    private Member member;
     private String message;
 
     @Builder
-    public ArticleResponseDto(Long articleId, String title, String contents, String author, String password, Date createdAt) {
+    public ArticleResponseDto(Long articleId, String title, String contents, Date createdAt, Member member) {
         this.articleId = articleId;
         this.title = title;
         this.contents = contents;
-        this.author = author;
         this.createdAt = createdAt;
+        this.member = member;
     }
 
     public ArticleResponseDto(String message) {

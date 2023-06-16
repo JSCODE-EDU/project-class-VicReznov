@@ -2,73 +2,43 @@ package toyboard.yoon.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.member.MemberRequestDto;
 import toyboard.yoon.dto.member.MemberResponseDto;
-import toyboard.yoon.entity.Member;
-import toyboard.yoon.enumeration.MemberRole;
+import toyboard.yoon.entity.member.Member;
 import toyboard.yoon.repository.MemberRepository;
-import toyboard.yoon.security.JwtTokenProvider;
+import toyboard.yoon.security.JwtAuth;
+import toyboard.yoon.security.dto.*;
+import toyboard.yoon.service.member.MemberService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-import java.util.UUID;
+import javax.validation.Valid;
 
 @Slf4j
-@RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
 
-    private final PasswordEncoder passwordEncoder;
-    private final JwtTokenProvider jwtTokenProvider;
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    // 회원가입
-    @PostMapping("/register")
-    public Long register(@RequestBody MemberRequestDto memberRequestDto) {
-        return memberRepository.save(Member.builder()
-                .email(memberRequestDto.getEmail())
-                .password(passwordEncoder.encode(memberRequestDto.getPassword()))
-                .memberRole(memberRequestDto.getMemberRole())
-                .build()).getId();
+    @PostMapping("/signup")
+    public ResponseEntity<String> signUp(@Valid @RequestBody MemberRequest memberRequest){
+        return ResponseEntity.ok(memberService.signUp(memberRequest));
     }
 
-    // 로그인
     @PostMapping("/login")
-    public MemberResponseDto login(@RequestBody MemberRequestDto memberRequestDto) {
-
-        Member member = memberRepository.findByEmail(memberRequestDto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("가입 되지 않은 이메일입니다."));
-        if (!passwordEncoder.matches(memberRequestDto.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException("이메일 또는 비밀번호가 맞지 않습니다.");
-        }
-
-        String token = jwtTokenProvider.createToken(member.getEmail(), member.getMemberRole());
-
-//        return jwtTokenProvider.createToken(member.getEmail(), member.getMemberRole());
-        return MemberResponseDto.builder()
-                .id(member.getId())
-                .token(token).build();
+    public ResponseEntity<LoginResponse> logIn(@Valid @RequestBody LoginRequest loginRequest) {
+        return ResponseEntity.ok(memberService.logIn(loginRequest));
     }
 
-    @GetMapping("/about")
-//    @PreAuthorize("hasRole('USER')")
-    public MemberResponseDto about(HttpServletRequest request) {
-        log.info("request log={}", request.getHeader("X-AUTH-TOKEN"));
-
-        String token = jwtTokenProvider.resolveToken(request);
-        String userPK = jwtTokenProvider.getUserPK(token);
-        Member member = memberRepository.findById(Long.parseLong(userPK))
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
-
-        return MemberResponseDto.builder()
-                .id(member.getId())
-                .email(member.getEmail())
-                .build();
+    @GetMapping("/info")
+    public ResponseEntity<UserInfoResponse> findUserInfo(@JwtAuth Member member) {
+        return ResponseEntity.ok(memberService.findUserInfo(member));
     }
-
 
 }

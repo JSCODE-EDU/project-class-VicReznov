@@ -2,35 +2,38 @@ package toyboard.yoon.security;
 
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.GenericFilterBean;
+import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+@Slf4j
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        // 헤더에서 JWT를 받아옴
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        // 유효한 토큰인지 확인
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        String token = jwtTokenProvider.resolveToken(request);
+
         if (token != null && jwtTokenProvider.validateToken(token)) {
-            // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옴
+            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext 에 저장
+            // JWT를 사용하므로 세션은 사실 필요없으나 권한 관리를 편하게 하기 위해 Spring security 이용
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
-            // SecurityContext에 Authentication 객체를 저장
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
         }
-        chain.doFilter(request, response);
+        filterChain.doFilter(request, response);
     }
-
 }
