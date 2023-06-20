@@ -1,8 +1,6 @@
 package toyboard.yoon.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import toyboard.yoon.entity.member.Member;
 
@@ -16,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class Article {
 
     @Id
@@ -37,9 +36,17 @@ public class Article {
     @JoinColumn(name = "member_id")
     private Member member;
 
+    public Article() {
+
+    }
+
 
     public void setCreatedAt(Date createdAt) {
         this.createdAt = createdAt;
     }
 
+    public boolean isWriter(Long updaterId) {
+        return this.member.getId()
+                .equals(updaterId);
+    }
 }

@@ -15,6 +15,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import toyboard.yoon.dto.article.ArticleRequestDto;
 import toyboard.yoon.dto.article.ArticleResponseDto;
+import toyboard.yoon.entity.member.Member;
+import toyboard.yoon.security.JwtAuth;
 import toyboard.yoon.service.article.ArticleService;
 
 import javax.persistence.EntityNotFoundException;
@@ -111,11 +113,12 @@ public class ArticleController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @PutMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleResponseDto> updateArticle(@PathVariable Long articleId,
+    public ResponseEntity<ArticleResponseDto> updateArticle(@JwtAuth Member member,
+                                                            @PathVariable Long articleId,
                                                             @RequestBody @Valid ArticleRequestDto articleDto) {
 
         try {
-            ArticleResponseDto result = articleService.updateArticle(articleId, articleDto);
+            ArticleResponseDto result = articleService.updateArticle(member, articleId, articleDto);
             return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
@@ -134,10 +137,10 @@ public class ArticleController {
             @ApiResponse(responseCode = "500", description = "INTERNAL SERVER ERROR")
     })
     @DeleteMapping(value = "/{articleId}")
-    public ResponseEntity<ArticleResponseDto> deleteArticle(@PathVariable long articleId) {
+    public ResponseEntity<ArticleResponseDto> deleteArticle(@JwtAuth Member member, @PathVariable long articleId) {
 
         try {
-            articleService.deleteArticle(articleId);
+            articleService.deleteArticle(member, articleId);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (EntityNotFoundException e) {
             log.error(e.getMessage());
