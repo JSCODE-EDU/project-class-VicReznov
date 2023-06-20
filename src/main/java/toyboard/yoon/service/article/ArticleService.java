@@ -82,7 +82,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public ArticleResponseDto updateArticle(Long articleId, ArticleRequestDto articleDto) {
+    public ArticleResponseDto updateArticle(Member member, Long articleId, ArticleRequestDto articleDto) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
@@ -92,21 +92,22 @@ public class ArticleService {
         }
 
         Article updateArticle = article.get();
+
+        validateWriter(updateArticle, member.getId());
+
         updateArticle.setTitle(articleDto.getTitle());
         updateArticle.setContents(articleDto.getContents());
 
-        articleRepository.save(updateArticle);
-
         return ArticleResponseDto.builder()
-                .articleId(article.get().getArticleId())
-                .title(article.get().getTitle())
-                .contents(article.get().getContents())
-                .createdAt(article.get().getCreatedAt())
+                .articleId(updateArticle.getArticleId())
+                .title(updateArticle.getTitle())
+                .contents(updateArticle.getContents())
+                .createdAt(updateArticle.getCreatedAt())
                 .build();
     }
 
     @Transactional
-    public void deleteArticle(Long articleId) {
+    public void deleteArticle(Member member, Long articleId) {
         Optional<Article> article = articleRepository.findById(articleId);
 
         if(article.isEmpty()) {
@@ -114,6 +115,8 @@ public class ArticleService {
 //            throw new RestApiException(GlobalErrorCode.NOT_FOUND, String.format("Article Id '%d'가 존재하지 않습니다.", articleId));
             throw new RestApiException(GlobalErrorCode.NOT_FOUND);
         }
+
+        validateWriter(article.get(), member.getId());
 
         articleRepository.deleteById(articleId);
     }
@@ -134,6 +137,12 @@ public class ArticleService {
         if(keyword.trim().length() == 0) {
 //            throw new IllegalArgumentException(KEYWORD_LENGTH_ERROR);
             throw new RestApiException(GlobalErrorCode.METHOD_UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    private void validateWriter(Article article, Long updaterId) {
+        if(!article.isWriter(updaterId)) {
+            throw new IllegalArgumentException("게시물에 대한 권한이 없습니다.");
         }
     }
 }
