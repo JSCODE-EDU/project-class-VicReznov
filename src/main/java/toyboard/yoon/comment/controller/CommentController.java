@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 import toyboard.yoon.comment.dto.CommentSaveRequest;
 import toyboard.yoon.comment.dto.CommentSaveResponse;
 import toyboard.yoon.comment.service.CommentService;
+import toyboard.yoon.security.JwtAuth;
+import toyboard.yoon.entity.member.Member;
+
 
 import javax.validation.Valid;
 
@@ -20,9 +23,10 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/articles/{articleId}/comments")
-    public ResponseEntity<CommentSaveResponse> addComment(@PathVariable final Long postId,
+    public ResponseEntity<CommentSaveResponse> addComment(@JwtAuth Member member,
+                                                          @PathVariable final Long articleId,
                                                           @Valid @RequestBody CommentSaveRequest commentSaveRequest) {
-        CommentSaveResponse commentSaveResponse = commentService.addComment(postId, commentSaveRequest);
+        CommentSaveResponse commentSaveResponse = commentService.addComment(member, articleId, commentSaveRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(commentSaveResponse);
     }

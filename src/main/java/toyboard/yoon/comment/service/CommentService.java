@@ -25,13 +25,15 @@ public class CommentService {
 
 
     @Transactional
-    public CommentSaveResponse addComment(final Long articleId,
+    public CommentSaveResponse addComment(final Member member,
+                                          final Long articleId,
                                           final CommentSaveRequest commentSaveRequest) {
 
         Article article = findArticle(articleId);
         Comment comment = Comment.builder()
                 .content(commentSaveRequest.getContent())
                 .article(article)
+                .member(member)
                 .build();
         Comment savedComment = commentRepository.save(comment);
         return new CommentSaveResponse(savedComment.getId());

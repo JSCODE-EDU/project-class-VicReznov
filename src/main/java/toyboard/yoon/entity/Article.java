@@ -1,9 +1,6 @@
 package toyboard.yoon.entity;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import toyboard.yoon.entity.member.Member;
 
@@ -17,6 +14,7 @@ import java.util.Date;
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 public class Article {
 
     @Id
